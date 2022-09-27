@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -24,6 +25,14 @@ namespace MudPuppyGames.CardGame
         [SerializeField] private short _rank;
         /*[HideInInspector]*/
         public bool faceDown;
+
+        public int CardValue
+        {
+            get
+            {
+                return (int)_rank;
+            }
+        }
 
         //public Sprite face;
 
@@ -86,7 +95,7 @@ namespace MudPuppyGames.CardGame
         public override bool Equals(object value)
         {
             Card card = value as Card;
-            return _rank == card._rank;
+            return _rank == card._rank && _suit == card._suit;
         }
 
         public override int GetHashCode()
@@ -153,17 +162,18 @@ namespace MudPuppyGames.CardGame
         int numberOfDecks;
 
         List<Card> allPlayingCards;
-        Stack<Card> drawStack;
-        List<Card> discardPile;
-        Stack<Card> gameStack;
-
-        [SerializeField]
-        public int cardBackIndex;
-        public Sprite cardBack;
+        public Stack<Card> drawStack;
+        public List<Card> discardPile;
+        public List<Card> gameStack;
 
         public int RemainingCards
         {
             get { return drawStack.Count; }
+        }
+
+        public int GameStackSize
+        {
+            get { return gameStack.Count; }
         }
 
         public PlayingDeck(int deckMultiplier = 1) : base()
@@ -172,6 +182,7 @@ namespace MudPuppyGames.CardGame
             drawStack = new Stack<Card>();
             discardPile = new List<Card>();
             numberOfDecks = deckMultiplier;
+            gameStack = new List<Card>();
             //cardBack = deck.backs[cardBackIndex];
             foreach (var card in cards)
             {
@@ -228,15 +239,20 @@ namespace MudPuppyGames.CardGame
 
         public Card PeekGameStack()
         {
-            return gameStack.Peek();
+            if (gameStack.Count == 0)
+                return null;
+            else
+                return gameStack[gameStack.Count-1];
         }
 
         public void StartGameStack()
         {
             Card first = drawStack.Pop();
             first.faceDown = false;
-            gameStack = new Stack<Card>();
-            gameStack.Push(first);
+            gameStack = new List<Card>
+            {
+                first
+            };
         }
 
         public void Put(List<Card> play)
@@ -244,7 +260,7 @@ namespace MudPuppyGames.CardGame
             foreach(Card card in play)
             {
                 card.faceDown = false;
-                gameStack.Push(card);
+                gameStack.Add(card);
             }
         }
     }

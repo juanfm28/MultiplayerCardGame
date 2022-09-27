@@ -17,6 +17,17 @@ public class DebugGameLogic : MonoBehaviour
     public bool gameReadyToStart;
     public int activePlayer = -1;
 
+    private void Start()
+    {
+        logic.OnPlay.AddListener(ReadActivePlayerFromGame);
+        logic.OnPlay.AddListener(DisplayGameState);
+        logic.OnGameStart.AddListener(ReadActivePlayerFromGame);
+        logic.OnGameStart.AddListener(DisplayGameState);
+        logic.OnGameFinished.AddListener(DisplayGameState);
+        foreach (StupidPlayer player in logic.players)
+            player.OnSelectHandCards.AddListener(DisplayGameState);
+    }
+
     public void DisplayGameState()
     {
         deck.text = "On Deck: "+logic.CardsOnDeck;
@@ -37,10 +48,22 @@ public class DebugGameLogic : MonoBehaviour
         DisplayGameState();
     }
 
+    public void ReadActivePlayerFromGame()
+    {
+        activePlayer = logic.players.IndexOf(logic.playerInTurn); 
+    }
+
     public void Play()
     {
         Debug.Log("Player "+activePlayer+" made a move");
-        logic.players[activePlayer].MakePlay();
+        if(logic.IsActive)
+        {
+            logic.PlayTurn();
+        }
+        else
+        {
+            logic.players[activePlayer].MakePlay();
+        }
         DisplayGameState();
     }
 
@@ -48,55 +71,55 @@ public class DebugGameLogic : MonoBehaviour
     {
         if (Input.GetKeyUp(KeyCode.Q))
         {
-            logic.players[activePlayer].TouchCard(0);
+            logic.players[activePlayer].SelectCardToPlay(0);
         }
         else if (Input.GetKeyUp(KeyCode.W))
         {
-            logic.players[activePlayer].TouchCard(1);
+            logic.players[activePlayer].SelectCardToPlay(1);
         }
         else if (Input.GetKeyUp(KeyCode.E))
         {
-            logic.players[activePlayer].TouchCard(2);
+            logic.players[activePlayer].SelectCardToPlay(2);
         }
         else if (Input.GetKeyUp(KeyCode.R))
         {
-            logic.players[activePlayer].TouchCard(3);
+            logic.players[activePlayer].SelectCardToPlay(3);
         }
         else if (Input.GetKeyUp(KeyCode.T))
         {
-            logic.players[activePlayer].TouchCard(4);
+            logic.players[activePlayer].SelectCardToPlay(4);
         }
         else if (Input.GetKeyUp(KeyCode.Y))
         {
-            logic.players[activePlayer].TouchCard(5);
+            logic.players[activePlayer].SelectCardToPlay(5);
         }
         else if (Input.GetKeyUp(KeyCode.A))
         {
-            logic.players[activePlayer].TouchCard(6);
+            logic.players[activePlayer].SelectCardToPlay(6);
         }
         else if (Input.GetKeyUp(KeyCode.S))
         {
-            logic.players[activePlayer].TouchCard(7);
+            logic.players[activePlayer].SelectCardToPlay(7);
         }
         else if (Input.GetKeyUp(KeyCode.D))
         {
-            logic.players[activePlayer].TouchCard(8);
+            logic.players[activePlayer].SelectCardToPlay(8);
         }
         else if (Input.GetKeyUp(KeyCode.W))
         {
-            logic.players[activePlayer].TouchCard(9);
+            logic.players[activePlayer].SelectCardToPlay(9);
         }
         else if (Input.GetKeyUp(KeyCode.F))
         {
-            logic.players[activePlayer].TouchCard(10);
+            logic.players[activePlayer].SelectCardToPlay(10);
         }
         else if (Input.GetKeyUp(KeyCode.Z))
         {
-            logic.players[activePlayer].TouchCard(11);
+            logic.players[activePlayer].SelectCardToPlay(11);
         }
         else if (Input.GetKeyUp(KeyCode.X))
         {
-            logic.players[activePlayer].TouchCard(12);
+            logic.players[activePlayer].SelectCardToPlay(12);
         }
     }
 }

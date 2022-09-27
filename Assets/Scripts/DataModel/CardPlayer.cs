@@ -22,8 +22,10 @@ namespace MudPuppyGames.CardGame
         public List<Card> PlayFrom(List<Card> container)
         {
             List<Card> play = new List<Card>();
-            for (int i = 0; i < selectedCards.Count; i++)
-                play.Add(container[i]);
+            foreach (int selectedIndex in selectedCards)
+                play.Add(container[selectedIndex]);
+            foreach (Card cardInPlay in play)
+                container.Remove(cardInPlay);
             return play;
         }
 
@@ -55,7 +57,6 @@ namespace MudPuppyGames.CardGame
         public void CallReady()
         {
             isReady = true;
-            Debug.Log("d");
             OnPlayerReady.Invoke();
             Debug.Log(playerName+" is ready");
         }
